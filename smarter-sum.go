@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"math/big"
 	"os"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
@@ -16,7 +16,7 @@ func main() {
 
 func smarterSum(s string) string {
 	foundNum := false
-	sum := 0.0
+	var sum big.Float
 	highestPrecision := 0
 	usedDollarSign := false
 	usedCommas := false
@@ -24,12 +24,12 @@ func smarterSum(s string) string {
 	s = regexp.MustCompile("[^-$0-9,.]+").ReplaceAllString(s, " ")
 	for _, field := range strings.Fields(s) {
 		justNum := regexp.MustCompile("[$,]").ReplaceAllString(field, "")
-		float, err := strconv.ParseFloat(justNum, 64)
+		float, _, err := big.ParseFloat(justNum, 10, 10000, big.ToNearestEven)
 		if err != nil {
 			continue
 		}
 		foundNum = true
-		sum += float
+		sum.Add(&sum, float)
 		p := getPrecision(field)
 		if p > highestPrecision {
 			highestPrecision = p
@@ -47,7 +47,7 @@ func smarterSum(s string) string {
 	if highestPrecision == 1 && usedDollarSign {
 		highestPrecision = 2
 	}
-	prettyNum := strconv.FormatFloat(sum, 'f', highestPrecision, 64)
+	prettyNum := sum.Text('f', highestPrecision)
 	if usedCommas {
 		prettyNum = addCommas(prettyNum)
 	}
