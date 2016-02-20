@@ -21,7 +21,7 @@ func smarterSum(s string) string {
 	usedCommas := false
 
 	s = regexp.MustCompile("[$]").ReplaceAllString(s, "")
-	s = regexp.MustCompile("[^0123456789.,-]+").ReplaceAllString(s, " ")
+	s = regexp.MustCompile("[^0-9.,-]+").ReplaceAllString(s, " ")
 	for _, field := range strings.Fields(s) {
 		noCommas := regexp.MustCompile(",").ReplaceAllString(field, "")
 		float, err := strconv.ParseFloat(noCommas, 64)
@@ -48,8 +48,7 @@ func smarterSum(s string) string {
 	return prettyNum
 }
 
-func addCommas(s string) string {
-	pretty := ""
+func addCommas(s string) (pretty string) {
 	end := len(s) - 1
 	if strings.Contains(s, ".") {
 		end = strings.Index(s, ".") - 1
@@ -68,7 +67,7 @@ func addCommas(s string) string {
 		j++
 		pretty = string(s[i]) + pretty
 	}
-	return pretty
+	return
 }
 
 func getPrecision(s string) int {
