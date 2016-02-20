@@ -19,7 +19,7 @@ func TestSmarterSum(t *testing.T) {
 		{"test 1234.12 10 test", "1244.12"},
 		{"test 1,234.12 10 test", "1,244.12"},
 		{"1\n2\n3\n4\n5", "15"},
-		{"$15.12 text $100.10", "115.22"},
+		{"$15.12 text $100.10", "$115.22"},
 		{"10 1", "11"},
 		{"10. 1", "11"},
 		{"10.0 1", "11.0"},
@@ -40,7 +40,7 @@ func TestSmarterSum(t *testing.T) {
 		{"test -1,234.12 10 test", "-1,224.12"},
 		{"test -1234.12 10 test", "-1224.12"},
 		{"-1\n2\n3\n4\n5", "13"},
-		{"-$15.12 text $100.10", "84.98"},
+		{"-$15.12 text $100.10", "$84.98"},
 		{"-10 1", "-9"},
 		{"-10. 1", "-9"},
 		{"-10.0 1", "-9.0"},
@@ -50,6 +50,16 @@ func TestSmarterSum(t *testing.T) {
 		{"-1000000 -222000 -333 -.444", "-1222333.444"},
 		{"-1000 ,test, -2000", "-3000"},
 		{"-1000 ,test, 2000", "1000"},
+
+		{"$1 2 3 4", "$10"},
+		{"1 2 $3 4", "$10"},
+		{"-$1 2 3 4", "$8"},
+		{"-$10 2 3 4", "-$1"},
+		{"-$10 2.8 3 4", "-$0.20"},
+		{"-10 2.8 $3 4", "-$0.20"},
+		{"10 -$20 -$30.1", "-$40.10"},
+		{"10 -$20 -$30.12", "-$40.12"},
+		{"10 -$20 -$30.123", "-$40.123"},
 	}
 	for _, c := range cases {
 		got := smarterSum(c.in)
@@ -70,6 +80,8 @@ func TestGetPrecision(t *testing.T) {
 		{"10.", 0},
 		{"10.1", 1},
 		{"10.12", 2},
+		{"$10.12", 2},
+		{"-$10.12", 2},
 		{"10.113", 3},
 		{"0.", 0},
 		{"0.1", 1},
@@ -87,8 +99,8 @@ func TestGetPrecision(t *testing.T) {
 			t.Errorf("smartSum(%q) == %d, want %d", c.in, got, c.want)
 		}
 	}
-
 }
+
 func TestAddCommas(t *testing.T) {
 	cases := []struct {
 		in   string
@@ -131,6 +143,31 @@ func TestAddCommas(t *testing.T) {
 	}
 	for _, c := range cases {
 		got := addCommas(c.in)
+		if got != c.want {
+			t.Errorf("smartSum(%q) == %q, want %q", c.in, got, c.want)
+		}
+	}
+}
+
+func TestAddDollarSigns(t *testing.T) {
+	cases := []struct {
+		in   string
+		want string
+	}{
+		{"", ""},
+		{"1", "$1"},
+		{"12", "$12"},
+		{"123", "$123"},
+		{"123.4", "$123.4"},
+		{"123.45", "$123.45"},
+		{"-1", "-$1"},
+		{"-12", "-$12"},
+		{"-123", "-$123"},
+		{"-123.4", "-$123.4"},
+		{"-123.45", "-$123.45"},
+	}
+	for _, c := range cases {
+		got := addDollarSign(c.in)
 		if got != c.want {
 			t.Errorf("smartSum(%q) == %q, want %q", c.in, got, c.want)
 		}
