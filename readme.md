@@ -9,7 +9,7 @@ It's smart about maintaining precision, too.
     $ echo '$12.43 $100 $2200' | smarter-sum
     2312.43
 
-It will even keep your commas for you, should you decide to use them.
+It'll even keep your commas for you, should you decide to use them.
 
     $ echo '1,234 5,278, 1,000,000.123' | smarter-sum
     1,006,512.123
@@ -20,6 +20,8 @@ The golden rule is that numbers must be whitespace delimited. More specifically,
 
 I find myself wanting to add numbers together in vim *a lot*. This utility
 makes that as easy as selecting a range and `:!smarter-sum`.
+
+I wrote the original [smart_sum](https://github.com/thanthese/smart_sum) in python, but it broke when I updated to python 3. That was annoying, and I didn't want it to happen again.
 
 ### Installation
 
