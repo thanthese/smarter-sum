@@ -1,12 +1,17 @@
 package main
 
 import (
+	"fmt"
+	"io/ioutil"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
 func main() {
+	bytes, _ := ioutil.ReadAll(os.Stdin)
+	fmt.Println(smarterSum(string(bytes)))
 }
 
 func smarterSum(s string) string {
