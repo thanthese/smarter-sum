@@ -13,6 +13,11 @@ It'll keep your commas for you if you use them.
     $ echo '1,234 5,278, 1,000,000.123' | smarter-sum
     1,006,512.123
 
+Negatives are no big thing.
+
+    $ echo '100 -10' | smarter-sum
+    90
+
 And it will play nicely with dollar signs.
 
     $ echo '10.1 -$50' | smarter-sum
